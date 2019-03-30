@@ -12,7 +12,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
-#include <avr/interrupt.h>initializer
+#include <avr/interrupt.h>
 
 void read_adc(void);													// where the ADC is read
 void adc_initializer(void);												// where ADC initializes
