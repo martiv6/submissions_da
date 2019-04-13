@@ -1,5 +1,5 @@
 
-DA3A.elf:     file format elf32-avr
+DA3B.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
@@ -7,7 +7,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         00000e1c  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000016  00800116  00800116  00000ec6  2**0
+  2 .bss          00000025  00800116  00800116  00000ec6  2**0
                   ALLOC
   3 .comment      0000005c  00000000  00000000  00000ec6  2**0
                   CONTENTS, READONLY
@@ -19,15 +19,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_abbrev 0000076a  00000000  00000000  0000185f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000379  00000000  00000000  00001fc9  2**0
+  8 .debug_line   00000378  00000000  00000000  00001fc9  2**0
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  000000e4  00000000  00000000  00002344  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000003ee  00000000  00000000  00002428  2**0
+ 10 .debug_str    00000412  00000000  00000000  00002428  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000259  00000000  00000000  00002816  2**0
+ 11 .debug_loc    00000259  00000000  00000000  0000283a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000038  00000000  00000000  00002a6f  2**0
+ 12 .debug_ranges 00000038  00000000  00000000  00002a93  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -113,7 +113,7 @@ Disassembly of section .text:
  194:	1d 92       	st	X+, r1
 
 00000196 <.do_clear_bss_start>:
- 196:	ac 32       	cpi	r26, 0x2C	; 44
+ 196:	ab 33       	cpi	r26, 0x3B	; 59
  198:	b2 07       	cpc	r27, r18
  19a:	e1 f7       	brne	.-8      	; 0x194 <.do_clear_bss_loop>
  19c:	0e 94 42 01 	call	0x284	; 0x284 <main>
@@ -122,41 +122,41 @@ Disassembly of section .text:
 000001a4 <__bad_interrupt>:
  1a4:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-000001a8 <adc_init>:
+000001a8 <adc_initializer>:
+	}
 }
 
-void adc_init(void)
+void adc_initializer(void)
 {
-	
-	ADMUX = (0<<REFS1)| // Reference Selection Bits
+	ADMUX = (0<<REFS1)|													// Reference Selection Bits
  1a8:	85 e4       	ldi	r24, 0x45	; 69
  1aa:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__TEXT_REGION_LENGTH__+0x7e007c>
-	(0<<ADLAR)| // ADC Left Adjust Result
-	(1<<MUX2)| // ANalog Channel Selection Bits
-	(0<<MUX1)| //
+	(1<<REFS0)|															// AVCC- external cap at AREF
+	(0<<ADLAR)|															// ADC Left Adjust Result
+	(1<<MUX2)|															// Analog Channel Selection Bits
+	(0<<MUX1)|															// PC5 is where its monitoring 
 	(1<<MUX0);
-
-	ADCSRA = (1<<ADEN)| // ADC ENable
+	ADCSRA = (1<<ADEN)|													// ADC enabled
  1ae:	85 e8       	ldi	r24, 0x85	; 133
  1b0:	80 93 7a 00 	sts	0x007A, r24	; 0x80007a <__TEXT_REGION_LENGTH__+0x7e007a>
-	(0<<ADPS1)|
-	(1<<ADPS0);
-
-	// Timer/Counter1 Interrupt Mask Register
-
-	TIMSK1 |= (1<<TOIE1); // enable overflow interrupt
+	(0<<ADIE)|															// ADC interrupt enable
+	(1<<ADPS2)|															// ADC prescaler select bits
+	(0<<ADPS1)|															// ADC prescaler select bits
+	(1<<ADPS0);															// ADC input
+																		// Timer/Counter1 Interrupt Mask Register
+	TIMSK1 |= (1<<TOIE1);												// enable overflow interrupt
  1b4:	ef e6       	ldi	r30, 0x6F	; 111
  1b6:	f0 e0       	ldi	r31, 0x00	; 0
  1b8:	80 81       	ld	r24, Z
  1ba:	81 60       	ori	r24, 0x01	; 1
  1bc:	80 83       	st	Z, r24
-	TCCR1B |= (1<<CS12)|(1<<CS10); // native clock
+	TCCR1B |= (1<<CS12)|(1<<CS10);										// clock
  1be:	e1 e8       	ldi	r30, 0x81	; 129
  1c0:	f0 e0       	ldi	r31, 0x00	; 0
  1c2:	80 81       	ld	r24, Z
  1c4:	85 60       	ori	r24, 0x05	; 5
  1c6:	80 83       	st	Z, r24
-	TCNT1 = 49911; //((16MHz/1024)*1)-1 = 15624
+	TCNT1 = 49911;														//((16MHz/1024)*1)-1 = 15624
  1c8:	87 ef       	ldi	r24, 0xF7	; 247
  1ca:	92 ec       	ldi	r25, 0xC2	; 194
  1cc:	90 93 85 00 	sts	0x0085, r25	; 0x800085 <__TEXT_REGION_LENGTH__+0x7e0085>
@@ -166,27 +166,28 @@ void adc_init(void)
 000001d6 <read_adc>:
 }
 
-
-void read_adc(void) {
-	unsigned char i =4;
-	adc_temp = 0; //initialize
- 1d6:	10 92 2b 01 	sts	0x012B, r1	; 0x80012b <adc_temp+0x1>
- 1da:	10 92 2a 01 	sts	0x012A, r1	; 0x80012a <adc_temp>
+void read_adc(void)														// initialize to begin to read from the sensor 
+ {
+	unsigned char i =4;													// to keep track of input 
+	room_temp = 0;														
+ 1d6:	10 92 3a 01 	sts	0x013A, r1	; 0x80013a <room_temp+0x1>
+ 1da:	10 92 39 01 	sts	0x0139, r1	; 0x800139 <room_temp>
  1de:	24 e0       	ldi	r18, 0x04	; 4
-	while (i--) {
-		ADCSRA |= (1<<ADSC);
+	while (i--)
+	 {
+		ADCSRA |= (1<<ADSC);											// used to start convo with chips
  1e0:	ea e7       	ldi	r30, 0x7A	; 122
  1e2:	f0 e0       	ldi	r31, 0x00	; 0
 		while(ADCSRA & (1<<ADSC));
-		adc_temp+= ADC;
+		room_temp+= ADC;
  1e4:	a8 e7       	ldi	r26, 0x78	; 120
  1e6:	b0 e0       	ldi	r27, 0x00	; 0
-
-void read_adc(void) {
-	unsigned char i =4;
-	adc_temp = 0; //initialize
-	while (i--) {
-		ADCSRA |= (1<<ADSC);
+ {
+	unsigned char i =4;													// to keep track of input 
+	room_temp = 0;														
+	while (i--)
+	 {
+		ADCSRA |= (1<<ADSC);											// used to start convo with chips
  1e8:	80 81       	ld	r24, Z
  1ea:	80 64       	ori	r24, 0x40	; 64
  1ec:	80 83       	st	Z, r24
@@ -194,16 +195,16 @@ void read_adc(void) {
  1ee:	80 81       	ld	r24, Z
  1f0:	86 fd       	sbrc	r24, 6
  1f2:	fd cf       	rjmp	.-6      	; 0x1ee <read_adc+0x18>
-		adc_temp+= ADC;
+		room_temp+= ADC;
  1f4:	4d 91       	ld	r20, X+
  1f6:	5c 91       	ld	r21, X
  1f8:	11 97       	sbiw	r26, 0x01	; 1
- 1fa:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <adc_temp>
- 1fe:	90 91 2b 01 	lds	r25, 0x012B	; 0x80012b <adc_temp+0x1>
+ 1fa:	80 91 39 01 	lds	r24, 0x0139	; 0x800139 <room_temp>
+ 1fe:	90 91 3a 01 	lds	r25, 0x013A	; 0x80013a <room_temp+0x1>
  202:	84 0f       	add	r24, r20
  204:	95 1f       	adc	r25, r21
- 206:	90 93 2b 01 	sts	0x012B, r25	; 0x80012b <adc_temp+0x1>
- 20a:	80 93 2a 01 	sts	0x012A, r24	; 0x80012a <adc_temp>
+ 206:	90 93 3a 01 	sts	0x013A, r25	; 0x80013a <room_temp+0x1>
+ 20a:	80 93 39 01 	sts	0x0139, r24	; 0x800139 <room_temp>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
@@ -221,44 +222,44 @@ void read_adc(void) {
  21e:	00 00       	nop
  220:	21 50       	subi	r18, 0x01	; 1
 
-
-void read_adc(void) {
-	unsigned char i =4;
-	adc_temp = 0; //initialize
-	while (i--) {
+void read_adc(void)														// initialize to begin to read from the sensor 
+ {
+	unsigned char i =4;													// to keep track of input 
+	room_temp = 0;														
+	while (i--)
  222:	11 f7       	brne	.-60     	; 0x1e8 <read_adc+0x12>
-		ADCSRA |= (1<<ADSC);
+		ADCSRA |= (1<<ADSC);											// used to start convo with chips
 		while(ADCSRA & (1<<ADSC));
-		adc_temp+= ADC;
+		room_temp+= ADC;
 		_delay_ms(50);
 	}
-	adc_temp = adc_temp/8 ; // Average a few samples
- 224:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <adc_temp>
- 228:	90 91 2b 01 	lds	r25, 0x012B	; 0x80012b <adc_temp+0x1>
+	room_temp = room_temp/8 ;											// gets correct value displayed 
+ 224:	80 91 39 01 	lds	r24, 0x0139	; 0x800139 <room_temp>
+ 228:	90 91 3a 01 	lds	r25, 0x013A	; 0x80013a <room_temp+0x1>
  22c:	96 95       	lsr	r25
  22e:	87 95       	ror	r24
  230:	96 95       	lsr	r25
  232:	87 95       	ror	r24
  234:	96 95       	lsr	r25
  236:	87 95       	ror	r24
- 238:	90 93 2b 01 	sts	0x012B, r25	; 0x80012b <adc_temp+0x1>
- 23c:	80 93 2a 01 	sts	0x012A, r24	; 0x80012a <adc_temp>
+ 238:	90 93 3a 01 	sts	0x013A, r25	; 0x80013a <room_temp+0x1>
+ 23c:	80 93 39 01 	sts	0x0139, r24	; 0x800139 <room_temp>
  240:	08 95       	ret
 
 00000242 <USART_init>:
-
 }
 
 /* INIT USART (RS-232) */
-void USART_init( unsigned int ubrr ) {
+void USART_init( unsigned int ubrr )
+ {
 	UBRR0H = (unsigned char)(ubrr>>8);
  242:	90 93 c5 00 	sts	0x00C5, r25	; 0x8000c5 <__TEXT_REGION_LENGTH__+0x7e00c5>
 	UBRR0L = (unsigned char)ubrr;
  246:	80 93 c4 00 	sts	0x00C4, r24	; 0x8000c4 <__TEXT_REGION_LENGTH__+0x7e00c4>
-	UCSR0B = (1 << TXEN0); // Enable receiver, transmitter & RX interrupt
+	UCSR0B = (1 << TXEN0);												// Enable receiver, transmitter & RX interrupt
  24a:	88 e0       	ldi	r24, 0x08	; 8
  24c:	80 93 c1 00 	sts	0x00C1, r24	; 0x8000c1 <__TEXT_REGION_LENGTH__+0x7e00c1>
-	UCSR0C = (3 << UCSZ00); //asynchronous 8 N 1
+	UCSR0C = (3 << UCSZ00);												// asynchronous 8 N 1
  250:	86 e0       	ldi	r24, 0x06	; 6
  252:	80 93 c2 00 	sts	0x00C2, r24	; 0x8000c2 <__TEXT_REGION_LENGTH__+0x7e00c2>
  256:	08 95       	ret
@@ -266,42 +267,45 @@ void USART_init( unsigned int ubrr ) {
 00000258 <USART_tx_string>:
 }
 
-void USART_tx_string( char *data ) {
+void USART_tx_string( char *data )										// used to print on to the screen
+{			
  258:	cf 93       	push	r28
  25a:	df 93       	push	r29
-	while ((*data != '\0')) {
+	while ((*data != '\0')) 
  25c:	fc 01       	movw	r30, r24
  25e:	20 81       	ld	r18, Z
  260:	22 23       	and	r18, r18
  262:	69 f0       	breq	.+26     	; 0x27e <USART_tx_string+0x26>
  264:	dc 01       	movw	r26, r24
  266:	11 96       	adiw	r26, 0x01	; 1
+	{
 		while (!(UCSR0A & (1 <<UDRE0)));
  268:	e0 ec       	ldi	r30, 0xC0	; 192
  26a:	f0 e0       	ldi	r31, 0x00	; 0
 		UDR0 = *data;
  26c:	c6 ec       	ldi	r28, 0xC6	; 198
  26e:	d0 e0       	ldi	r29, 0x00	; 0
-	UCSR0C = (3 << UCSZ00); //asynchronous 8 N 1
-}
 
-void USART_tx_string( char *data ) {
-	while ((*data != '\0')) {
+void USART_tx_string( char *data )										// used to print on to the screen
+{			
+	while ((*data != '\0')) 
+	{
 		while (!(UCSR0A & (1 <<UDRE0)));
  270:	90 81       	ld	r25, Z
  272:	95 ff       	sbrs	r25, 5
  274:	fd cf       	rjmp	.-6      	; 0x270 <USART_tx_string+0x18>
 		UDR0 = *data;
  276:	28 83       	st	Y, r18
-	UCSR0B = (1 << TXEN0); // Enable receiver, transmitter & RX interrupt
-	UCSR0C = (3 << UCSZ00); //asynchronous 8 N 1
+	UCSR0C = (3 << UCSZ00);												// asynchronous 8 N 1
 }
 
-void USART_tx_string( char *data ) {
-	while ((*data != '\0')) {
+void USART_tx_string( char *data )										// used to print on to the screen
+{			
+	while ((*data != '\0')) 
  278:	2d 91       	ld	r18, X+
  27a:	21 11       	cpse	r18, r1
  27c:	f9 cf       	rjmp	.-14     	; 0x270 <USART_tx_string+0x18>
+	{
 		while (!(UCSR0A & (1 <<UDRE0)));
 		UDR0 = *data;
 		data++;
@@ -312,18 +316,18 @@ void USART_tx_string( char *data ) {
  282:	08 95       	ret
 
 00000284 <main>:
-volatile unsigned int adc_temp;
-char outs[20]; //array
+volatile unsigned int room_temp;										// where we store the temp of the ADC
+char outs[35];															// room we have to print
 
-int main(void) {
-	
-	adc_init(); // Initialize the ADC (Analog / Digital Converter)
- 284:	0e 94 d4 00 	call	0x1a8	; 0x1a8 <adc_init>
-	USART_init(MYUBRR); // Initialize the USART (RS232 interface)
+int main(void) 
+{
+	adc_initializer();													// Initialize the ADC (Analog / Digital Converter)
+ 284:	0e 94 d4 00 	call	0x1a8	; 0x1a8 <adc_initializer>
+	USART_init(MYUBRR);													// Initialize the USART (RS232 interface)
  288:	87 e6       	ldi	r24, 0x67	; 103
  28a:	90 e0       	ldi	r25, 0x00	; 0
  28c:	0e 94 21 01 	call	0x242	; 0x242 <USART_init>
-	USART_tx_string("Connected!\r\n"); // shows theres a connection with USART
+	USART_tx_string("Connected!\r\n");									// shows theres a connection with USART
  290:	80 e0       	ldi	r24, 0x00	; 0
  292:	91 e0       	ldi	r25, 0x01	; 1
  294:	0e 94 2c 01 	call	0x258	; 0x258 <USART_tx_string>
@@ -336,9 +340,8 @@ int main(void) {
  2a4:	e1 f7       	brne	.-8      	; 0x29e <main+0x1a>
  2a6:	00 c0       	rjmp	.+0      	; 0x2a8 <main+0x24>
  2a8:	00 00       	nop
-	_delay_ms(125); // wait a bit
-
-	sei(); //interrupt
+	_delay_ms(125);														// waits
+	sei();																// enable global interrupts
  2aa:	78 94       	sei
  2ac:	ff cf       	rjmp	.-2      	; 0x2ac <main+0x28>
 
@@ -347,7 +350,7 @@ int main(void) {
 	}
 }
 
-ISR(TIMER1_OVF_vect) //timer overflow interrupt to delay for 1 second
+ISR(TIMER1_OVF_vect)													// timer overflow interrupt to delay for 1 second
 {
  2ae:	1f 92       	push	r1
  2b0:	0f 92       	push	r0
@@ -366,11 +369,11 @@ ISR(TIMER1_OVF_vect) //timer overflow interrupt to delay for 1 second
  2ca:	bf 93       	push	r27
  2cc:	ef 93       	push	r30
  2ce:	ff 93       	push	r31
-	read_adc();//read ADC
+	read_adc();															// read ADC
  2d0:	0e 94 eb 00 	call	0x1d6	; 0x1d6 <read_adc>
-	snprintf(outs,sizeof(outs),"%3d F \r\n", adc_temp);// print it
- 2d4:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <adc_temp>
- 2d8:	90 91 2b 01 	lds	r25, 0x012B	; 0x80012b <adc_temp+0x1>
+	snprintf(outs,sizeof(outs),"%3d F \r\n", room_temp);				// prints it
+ 2d4:	80 91 39 01 	lds	r24, 0x0139	; 0x800139 <room_temp>
+ 2d8:	90 91 3a 01 	lds	r25, 0x013A	; 0x80013a <room_temp+0x1>
  2dc:	9f 93       	push	r25
  2de:	8f 93       	push	r24
  2e0:	8d e0       	ldi	r24, 0x0D	; 13
@@ -378,18 +381,18 @@ ISR(TIMER1_OVF_vect) //timer overflow interrupt to delay for 1 second
  2e4:	9f 93       	push	r25
  2e6:	8f 93       	push	r24
  2e8:	1f 92       	push	r1
- 2ea:	84 e1       	ldi	r24, 0x14	; 20
+ 2ea:	83 e2       	ldi	r24, 0x23	; 35
  2ec:	8f 93       	push	r24
  2ee:	86 e1       	ldi	r24, 0x16	; 22
  2f0:	91 e0       	ldi	r25, 0x01	; 1
  2f2:	9f 93       	push	r25
  2f4:	8f 93       	push	r24
  2f6:	0e 94 7e 06 	call	0xcfc	; 0xcfc <snprintf>
-	USART_tx_string(outs);
+	USART_tx_string(outs);												// prints spaces
  2fa:	86 e1       	ldi	r24, 0x16	; 22
  2fc:	91 e0       	ldi	r25, 0x01	; 1
  2fe:	0e 94 2c 01 	call	0x258	; 0x258 <USART_tx_string>
-	TCNT1 = 49911; //reset tcnt value for delay
+	TCNT1 = 49911;														// reset tcnt value for delay
  302:	87 ef       	ldi	r24, 0xF7	; 247
  304:	92 ec       	ldi	r25, 0xC2	; 194
  306:	90 93 85 00 	sts	0x0085, r25	; 0x800085 <__TEXT_REGION_LENGTH__+0x7e0085>
