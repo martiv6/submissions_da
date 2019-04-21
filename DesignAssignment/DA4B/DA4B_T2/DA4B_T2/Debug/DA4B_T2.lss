@@ -1,0 +1,215 @@
+
+DA4B_T2.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00800100  00800100  00000196  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         00000122  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000002  00800100  00800100  00000196  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  00000196  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000001c8  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000020  00000000  00000000  00000208  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   00000759  00000000  00000000  00000228  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 0000069d  00000000  00000000  00000981  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   000002b9  00000000  00000000  0000101e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000024  00000000  00000000  000012d8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    000003a0  00000000  00000000  000012fc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000048  00000000  00000000  0000169c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000010  00000000  00000000  000016e4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+   4:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+   8:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+   c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  10:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  14:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  18:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  1c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  20:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  24:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  28:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  2c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  30:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  34:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  38:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  3c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  40:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  44:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  48:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  4c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  50:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  54:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  58:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  5c:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  60:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+  64:	0c 94 46 00 	jmp	0x8c	; 0x8c <__bad_interrupt>
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+
+00000074 <__do_clear_bss>:
+  74:	21 e0       	ldi	r18, 0x01	; 1
+  76:	a0 e0       	ldi	r26, 0x00	; 0
+  78:	b1 e0       	ldi	r27, 0x01	; 1
+  7a:	01 c0       	rjmp	.+2      	; 0x7e <.do_clear_bss_start>
+
+0000007c <.do_clear_bss_loop>:
+  7c:	1d 92       	st	X+, r1
+
+0000007e <.do_clear_bss_start>:
+  7e:	a2 30       	cpi	r26, 0x02	; 2
+  80:	b2 07       	cpc	r27, r18
+  82:	e1 f7       	brne	.-8      	; 0x7c <.do_clear_bss_loop>
+  84:	0e 94 48 00 	call	0x90	; 0x90 <main>
+  88:	0c 94 8f 00 	jmp	0x11e	; 0x11e <_exit>
+
+0000008c <__bad_interrupt>:
+  8c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000090 <main>:
+int motor_status = 0;
+
+int main(void)
+{
+	
+	DDRB = 0b11111111;										 //	port b as an output
+  90:	8f ef       	ldi	r24, 0xFF	; 255
+  92:	84 b9       	out	0x04, r24	; 4
+	DDRD = 0b11111111;										 //	port d as an output
+  94:	8a b9       	out	0x0a, r24	; 10
+	TCCR0A= 0b10000011;										 // set fast PWM and clears OCR0A on MATCH
+  96:	83 e8       	ldi	r24, 0x83	; 131
+  98:	84 bd       	out	0x24, r24	; 36
+	TCCR0B= 0b0101;											 // set prescaler to 1024
+  9a:	85 e0       	ldi	r24, 0x05	; 5
+  9c:	85 bd       	out	0x25, r24	; 37
+	ICR1=4999;												 // fast Pulse Width Modulation 
+  9e:	87 e8       	ldi	r24, 0x87	; 135
+  a0:	93 e1       	ldi	r25, 0x13	; 19
+  a2:	90 93 87 00 	sts	0x0087, r25	; 0x800087 <__TEXT_REGION_LENGTH__+0x7e0087>
+  a6:	80 93 86 00 	sts	0x0086, r24	; 0x800086 <__TEXT_REGION_LENGTH__+0x7e0086>
+	ADMUX = 0b1100000;										 // enables PC0 as the pin for ADC
+  aa:	80 e6       	ldi	r24, 0x60	; 96
+  ac:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__TEXT_REGION_LENGTH__+0x7e007c>
+	ADCSRA = 0b10100110;
+  b0:	86 ea       	ldi	r24, 0xA6	; 166
+  b2:	80 93 7a 00 	sts	0x007A, r24	; 0x80007a <__TEXT_REGION_LENGTH__+0x7e007a>
+
+	while (1)
+	{ 
+		//start conversion
+		ADCSRA |= ( 0b0001 << ADSC);
+  b6:	ea e7       	ldi	r30, 0x7A	; 122
+  b8:	f0 e0       	ldi	r31, 0x00	; 0
+		
+		while((ADCSRA & (1 << ADIF))== 0b0);
+		motor_status = ADCH;								 // the adc value that is inputed
+  ba:	a9 e7       	ldi	r26, 0x79	; 121
+  bc:	b0 e0       	ldi	r27, 0x00	; 0
+		
+		if(motor_status == 0)								 // if the potentiometer is at the lowest setting 
+		{
+			OCR1A = 0b0000;									 // turn to zero degree position 
+  be:	c8 e8       	ldi	r28, 0x88	; 136
+  c0:	d0 e0       	ldi	r29, 0x00	; 0
+		}
+		
+		if(motor_status == 0b11111111)						 // if the potentiometer is at the highest setting 
+		{
+			
+			OCR1A = 0b1000011100;							 // turn to 180 degree position 
+  c2:	2c e1       	ldi	r18, 0x1C	; 28
+  c4:	32 e0       	ldi	r19, 0x02	; 2
+	ADCSRA = 0b10100110;
+
+	while (1)
+	{ 
+		//start conversion
+		ADCSRA |= ( 0b0001 << ADSC);
+  c6:	80 81       	ld	r24, Z
+  c8:	80 64       	ori	r24, 0x40	; 64
+  ca:	80 83       	st	Z, r24
+		
+		while((ADCSRA & (1 << ADIF))== 0b0);
+  cc:	80 81       	ld	r24, Z
+  ce:	84 ff       	sbrs	r24, 4
+  d0:	fd cf       	rjmp	.-6      	; 0xcc <main+0x3c>
+		motor_status = ADCH;								 // the adc value that is inputed
+  d2:	8c 91       	ld	r24, X
+  d4:	90 e0       	ldi	r25, 0x00	; 0
+  d6:	90 93 01 01 	sts	0x0101, r25	; 0x800101 <_edata+0x1>
+  da:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <_edata>
+		
+		if(motor_status == 0)								 // if the potentiometer is at the lowest setting 
+  de:	89 2b       	or	r24, r25
+  e0:	59 f4       	brne	.+22     	; 0xf8 <main+0x68>
+		{
+			OCR1A = 0b0000;									 // turn to zero degree position 
+  e2:	19 82       	std	Y+1, r1	; 0x01
+  e4:	18 82       	st	Y, r1
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  e6:	4f ef       	ldi	r20, 0xFF	; 255
+  e8:	89 e6       	ldi	r24, 0x69	; 105
+  ea:	98 e1       	ldi	r25, 0x18	; 24
+  ec:	41 50       	subi	r20, 0x01	; 1
+  ee:	80 40       	sbci	r24, 0x00	; 0
+  f0:	90 40       	sbci	r25, 0x00	; 0
+  f2:	e1 f7       	brne	.-8      	; 0xec <main+0x5c>
+  f4:	00 c0       	rjmp	.+0      	; 0xf6 <main+0x66>
+  f6:	00 00       	nop
+			_delay_ms(500);									 // for debouncing 
+		}
+		
+		if(motor_status == 0b11111111)						 // if the potentiometer is at the highest setting 
+  f8:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+  fc:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <_edata+0x1>
+ 100:	8f 3f       	cpi	r24, 0xFF	; 255
+ 102:	91 05       	cpc	r25, r1
+ 104:	01 f7       	brne	.-64     	; 0xc6 <main+0x36>
+		{
+			
+			OCR1A = 0b1000011100;							 // turn to 180 degree position 
+ 106:	39 83       	std	Y+1, r19	; 0x01
+ 108:	28 83       	st	Y, r18
+ 10a:	4f ef       	ldi	r20, 0xFF	; 255
+ 10c:	89 e6       	ldi	r24, 0x69	; 105
+ 10e:	98 e1       	ldi	r25, 0x18	; 24
+ 110:	41 50       	subi	r20, 0x01	; 1
+ 112:	80 40       	sbci	r24, 0x00	; 0
+ 114:	90 40       	sbci	r25, 0x00	; 0
+ 116:	e1 f7       	brne	.-8      	; 0x110 <main+0x80>
+ 118:	00 c0       	rjmp	.+0      	; 0x11a <main+0x8a>
+ 11a:	00 00       	nop
+ 11c:	d4 cf       	rjmp	.-88     	; 0xc6 <main+0x36>
+
+0000011e <_exit>:
+ 11e:	f8 94       	cli
+
+00000120 <__stop_program>:
+ 120:	ff cf       	rjmp	.-2      	; 0x120 <__stop_program>
